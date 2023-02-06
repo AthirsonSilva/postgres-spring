@@ -39,6 +39,18 @@ public class Main {
 		return map;
 	}
 
+	@GetMapping("/{id}")
+	public Map<String, Object> getCustomer(@PathVariable("id") Integer id) {
+		Customer customer = customerRepository.findById(id).orElseThrow(
+				() -> new IllegalArgumentException("Customer with id " + id + " does not exist!"));
+
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("Customer", customer);
+		map.put("Message", "Customer successfully retrieved!");
+
+		return map;
+	}
+
 	@PostMapping("")
 	public Map<String, Object> registerNewCustomer(@RequestBody NewCustomerRequest request) {
 		Customer customer = new Customer();
@@ -59,17 +71,6 @@ public class Main {
 		map.put("Message", "Customer successfully deleted!");
 
 		return map;
-	}
-
-	@GetMapping("/greet")
-	public GreetResponse greet() {
-		return new GreetResponse(
-				"Hello, World! Welcome to my API!",
-				List.of("Java", "TypeScript", "Python"),
-				new Person(
-						"Athirson Silva",
-						20,
-						"Software Engineer"));
 	}
 
 	@PatchMapping("/{id}")
@@ -93,6 +94,17 @@ public class Main {
 			String email,
 			Integer age
 	) {
+
+		@GetMapping("/greet")
+		public GreetResponse greet() {
+			return new GreetResponse(
+					"Hello, World! Welcome to my API!",
+					List.of("Java", "TypeScript", "Python"),
+					new Person(
+							"Athirson Silva",
+							20,
+							"Software Engineer"));
+		}
 	}
 
 	record Person(String name, int age, String role) {
