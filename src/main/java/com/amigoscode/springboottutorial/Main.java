@@ -23,8 +23,10 @@ public class Main {
 	}
 
 	@GetMapping("")
-	public List<Customer> getCustomers() {
-		return customerRepository.findAll();
+	public Map<String, List<Customer>> getCustomers() {
+		HashMap<String, List<Customer>> map = new HashMap<>();
+		map.put("Customers", customerRepository.findAll());
+		return map;
 	}
 
 	@PostMapping("")
@@ -45,15 +47,25 @@ public class Main {
 		return map;
 	}
 
+	@DeleteMapping("/{id}")
+	public Map<String, Object> deleteCustomer(@PathVariable("id") Integer id) {
+		customerRepository.deleteById(id);
+
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("Message", "Customer successfully deleted!");
+
+		return map;
+	}
+
 	@GetMapping("/greet")
 	public GreetResponse greet() {
 		return new GreetResponse(
-				"Hello, World!",
+				"Hello, World! Welcome to my API!",
 				List.of("Java", "TypeScript", "Python"),
 				new Person(
-						"John",
-						30,
-						100.0));
+						"Athirson Silva",
+						20,
+						"Software Engineer"));
 	}
 
 	record NewCustomerRequest(
@@ -63,7 +75,8 @@ public class Main {
 	) {
 	}
 
-	record Person(String name, int age, double savings) {
+	record Person(String name, int age, String role) {
+
 	}
 
 
