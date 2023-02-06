@@ -2,12 +2,11 @@ package com.amigoscode.springboottutorial;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication
 @RestController
@@ -27,10 +26,23 @@ public class Main {
 	public List<Customer> getCustomers() {
 		return customerRepository.findAll();
 	}
-	
+
 	@PostMapping("")
-	public void registerNewCustomer(Customer customer) {
+	public Map<String, Object> registerNewCustomer(@RequestBody NewCustomerRequest request) {
+		Customer customer = new Customer();
+
+		customer.setName(request.name());
+		customer.setEmail(request.email());
+		customer.setAge(request.age());
+
 		customerRepository.save(customer);
+
+		// returns a JSON response
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("Customer", customer);
+		map.put("Message", "New customer successfully created!");
+
+		return map;
 	}
 
 	@GetMapping("/greet")
@@ -42,6 +54,13 @@ public class Main {
 						"John",
 						30,
 						100.0));
+	}
+
+	record NewCustomerRequest(
+			String name,
+			String email,
+			Integer age
+	) {
 	}
 
 	record Person(String name, int age, double savings) {
